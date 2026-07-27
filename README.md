@@ -1,8 +1,10 @@
-# **Qwen3-VL-HF-Demo**
+# **[Qwen3-VL-HF-Demo](https://huggingface.co/spaces/prithivMLmods/Qwen3-VL-HF-Demo)**
 
 Qwen3-VL-HF-Demo is an experimental visual reasoning, spatial grounding, and object detection workspace built around Alibaba's state-of-the-art `Qwen/Qwen3-VL-8B-Instruct` multimodal foundation model. The platform establishes four core reasoning workflows: **Query** (free-form VQA), **Caption** (variable-length descriptions), **Point** (2D coordinate keypoint localization), and **Detect** (2D bounding box detection).
 
 The application integrates `supervision` and PIL drawing utilities to dynamically render corner accents, keypoints, and bounding boxes over predicted coordinates (`point_2d` and `bbox_2d`). Featuring a dark-mode frontend with custom JavaScript-driven state management, inline token streaming via `TextIteratorStreamer`, and clipboard/export capabilities, it serves as a lightweight sandbox for evaluating vision-language models.
+
+<img width="1723" height="1889" alt="image" src="https://github.com/user-attachments/assets/84e7d2d9-3f78-4589-9cfb-dddfa10c6767" />
 
 ### **Key Features**
 
