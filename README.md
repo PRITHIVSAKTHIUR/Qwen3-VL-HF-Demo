@@ -1,108 +1,123 @@
 # **Qwen3-VL-HF-Demo**
 
-This is a Gradio-based demo application for the Qwen3-VL multimodal model. It allows users to perform inference on various media types, including images, videos, PDFs, GIFs, and image captioning. The app supports querying and analyzing content using the powerful Qwen3-VL-30B-A3B-Instruct model from Hugging Face.
+Qwen3-VL-HF-Demo is an experimental visual reasoning, spatial grounding, and object detection workspace built around Alibaba's state-of-the-art `Qwen/Qwen3-VL-8B-Instruct` multimodal foundation model. The platform establishes four core reasoning workflows: **Query** (free-form VQA), **Caption** (variable-length descriptions), **Point** (2D coordinate keypoint localization), and **Detect** (2D bounding box detection).
 
- ![Screenshot 1](https://github.com/user-attachments/assets/7cf23b6c-ccca-40f2-8547-0016253e4b44)
-<img width="1771" height="1081" alt="Screenshot 2025-10-12 at 19-44-46 Qwen3 VL HF Demo - a Hugging Face Space by prithivMLmods" src="https://github.com/user-attachments/assets/3cb7d6ee-1e9e-4674-8f3d-7ad9cedbceb4" />
-<img width="1775" height="1273" alt="Screenshot 2025-10-12 at 19-17-12 Qwen3 VL HF Demo - a Hugging Face Space by prithivMLmods" src="https://github.com/user-attachments/assets/befe4813-39b1-47aa-984f-3f994483ea2e" />
-<img width="1748" height="983" alt="Screenshot 2025-10-12 at 19-50-02 Qwen3 VL HF Demo - a Hugging Face Space by prithivMLmods" src="https://github.com/user-attachments/assets/afc3b372-059a-4442-a570-1958e5b1693e" />
+The application integrates `supervision` and PIL drawing utilities to dynamically render corner accents, keypoints, and bounding boxes over predicted coordinates (`point_2d` and `bbox_2d`). Featuring a dark-mode frontend with custom JavaScript-driven state management, inline token streaming via `TextIteratorStreamer`, and clipboard/export capabilities, it serves as a lightweight sandbox for evaluating vision-language models.
 
-## Features
+### **Key Features**
 
-- **Image Inference**: Upload an image and query it for analysis, OCR, captioning, or problem-solving.
-- **Video Inference**: Upload a video and describe or explain its content in detail.
-- **PDF Inference**: Upload a PDF, preview pages with navigation, and query for summarization, extraction, or analysis.
-- **GIF Inference**: Upload a GIF and describe its animation or actions.
-- **Image Captioning**: Generate detailed captions and attributes for uploaded images.
-- **Advanced Options**: Customize generation parameters like max new tokens, temperature, top-p, top-k, and repetition penalty.
-- **Examples**: Pre-loaded examples for each tab to get started quickly.
+* **Multimodal Spatial Reasoning:** Supports open-ended visual question answering, custom-length captioning, precise 2D keypoint localization (`Point`), and bounding box detection (`Detect`).
+* **Dynamic Bounding Box & Point Annotation:** Automatically parses raw model output JSON structures, normalizes coordinates, and overlays visual masks and corner-accented bounding boxes onto the target image.
+* **Real-time Token Streaming:** Integrates a threaded generation worker using `TextIteratorStreamer` to display reasoning tokens progressively as they are decoded.
+* **Custom Headless UI:** Built using vanilla JavaScript and CSS overlays for drag-and-drop media upload zones, live status bars, category tabs, and toast notifications.
+* **Export & Output Management:** Includes one-click tools to copy the generated raw token text to the clipboard or download it as a plain text file.
 
-## Requirements
+### **Repository Structure**
 
-To run this app, install the following dependencies:
+```text
+├── examples/
+│   ├── 1.jpg
+│   ├── 2.jpg
+│   ├── 3.jpg
+│   ├── 4.jpg
+│   └── 5.jpg
+├── app.py
+├── LICENSE
+├── pre-requirements.txt
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+└── uv.lock
 
 ```
-git+https://github.com/huggingface/accelerate.git
-git+https://github.com/huggingface/peft.git
-transformers-stream-generator
-transformers==4.57.0
-huggingface_hub
-albumentations
-qwen-vl-utils
-pyvips-binary
-sentencepiece
-opencv-python
-docling-core
-python-docx
-torchvision
-supervision
-matplotlib
-pdf2image
-num2words
-reportlab
-html2text
-xformers
-markdown
-requests
-pymupdf
-loguru
-hf_xet
-spaces
-pyvips
-pillow
-gradio
-einops
-httpx
-click
-torch
-fpdf
-timm
-av
+
+### **Installation and Requirements**
+
+To set up the Qwen3-VL-HF-Demo environment locally, configure your system according to the specifications below. A modern CUDA-enabled GPU is required.
+
+* **Python Version:** Minimum Python **3.10** is required; Python **3.12** or **3.14** is recommended for optimal performance.
+* **PyTorch Version:** `torch==2.11.0` or above is required for best compatibility.
+* **CUDA Version:** CUDA **13.0** is recommended (`--extra-index-url https://download.pytorch.org/whl/cu130`), matching the environment used on the live Hugging Face demo.
+
+#### **Running with `uv` (Recommended)**
+
+`uv` is an ultra-fast Python package and project manager written in Rust. It ensures rapid virtual environment setup and exact dependency synchronization based on the `uv.lock` file.
+
+**Step 1 — Install `uv`**
+
+* **macOS / Linux:** `curl -LsSf https://astral.sh/uv/install.sh | sh`
+* **Windows:** `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"`
+
+**Step 2 — Clone the repository**
+
+```bash
+git clone https://github.com/PRITHIVSAKTHIUR/Qwen3-VL-HF-Demo.git
+cd Qwen3-VL-HF-Demo
+
 ```
 
-You can install them using pip:
+**Step 3 — Initialize the project and install dependencies**
+
+```bash
+uv sync
+
+```
+
+**Step 4 — Run the script**
+
+```bash
+uv run app.py
+
+```
+
+#### **Standard PIP Installation**
+
+**1. Update Package Manager**
+Upgrade your local package manager:
+
+```bash
+pip install pip>=26.1.2
+
+```
+
+**2. Install Core Dependencies**
+Install the primary deep learning stack, vision-language utilities, and core libraries listed in `requirements.txt`:
 
 ```bash
 pip install -r requirements.txt
+
 ```
 
-(Note: Ensure you have CUDA-enabled GPU for optimal performance, as the model uses torch.float16.)
+#### **Core Requirements List (`requirements.txt`)**
 
-## Installation
+```text
+--extra-index-url https://download.pytorch.org/whl/cu130
+torch==2.11.0
+torchvision==0.26.0
+transformers==5.14.1
+accelerate==1.14.0
+diffusers==0.39.0
+peft==0.19.1
+gradio==6.20.0
+av==17.1.0
+spaces==0.51.1
+huggingface-hub==1.24.0
+supervision==0.29.1
+opencv-python==5.0.0.93
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/PRITHIVSAKTHIUR/Qwen3-VL-HF-Demo.git
-   cd Qwen3-VL-HF-Demo
-   ```
-
-2. Install the requirements (as listed above).
-
-3. Download the model if needed (the script loads it automatically from Hugging Face).
-
-## Usage
-
-Run the app using Python:
-
-```bash
-python app.py
 ```
 
-- The app will launch a Gradio interface in your browser.
-- Select a tab (Image, Video, PDF, GIF, or Caption).
-- Upload media and enter a query.
-- Adjust advanced options if desired.
-- Click "Submit" to generate output.
-- For PDFs, use navigation buttons to preview pages.
+### **Usage**
 
-The app supports streaming output for real-time generation and renders results in both raw text and Markdown formats.
+Once the web deployment initializes, open your browser to the local address output in your terminal (typically `http://127.0.0.1:7860/`).
 
-## Acknowledgements
+1. **Select Task Category:** Click on one of the top category tabs (**Query**, **Caption**, **Point**, or **Detect**).
+2. **Upload Asset:** Drag and drop an image into the upload area (or select one from the **Quick Examples** tray).
+3. **Refine Prompt:** Type your instruction inside the prompt field (e.g., *"Detect the children wearing a white T-shirt"* for Detect, or *"Headlight"* for Point).
+4. **Execute:** Click **Run Understanding**. The raw token output will stream in real time, and any coordinate predictions will render as an annotated overlay in the output image container.
 
-App by: [Prithiv Sakthi U R](https://huggingface.co/prithivMLmods)  
+### **Links and Source**
 
-Model: [Qwen/Qwen3-VL-30B-A3B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-30B-A3B-Instruct)  
-
-## License
-
-Apache License: Version 2.0
+* **GitHub Repository:** [https://github.com/PRITHIVSAKTHIUR/Qwen3-VL-HF-Demo.git](https://github.com/PRITHIVSAKTHIUR/Qwen3-VL-HF-Demo.git)
+* **Hugging Face Live Space:** [https://huggingface.co/spaces/prithivMLmods/Qwen3-VL-HF-Demo](https://huggingface.co/spaces/prithivMLmods/Qwen3-VL-HF-Demo)
+* **License:** [Apache License 2.0](https://github.com/PRITHIVSAKTHIUR/Qwen3-VL-HF-Demo/blob/main/LICENSE)
