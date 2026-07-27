@@ -1,0 +1,20 @@
+[project]
+name = "qwen3-vl-hf-demo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "accelerate==1.14.0",
+    "av==17.1.0",
+    "diffusers==0.39.0",
+    "gradio==6.20.0",
+    "huggingface-hub==1.24.0",
+    "opencv-python==5.0.0.93",
+    "peft==0.19.1",
+    "spaces==0.51.1",
+    "supervision==0.29.1",
+    "torch==2.11.0",
+    "torchvision==0.26.0",
+    "transformers==5.14.1",
+]
